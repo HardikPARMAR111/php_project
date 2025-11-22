@@ -1,8 +1,11 @@
 <?php
-require_once __DIR__ . "/../controllers/bookController.php";
+require_once __DIR__ . "/../controllers/BookController.php";
+require_once __DIR__ . "/../controllers/UserController.php";
 
 $bookController = new BookController();
+$userController = new UserController();
 
+// Get action from GET parameter
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
@@ -12,6 +15,16 @@ switch ($action) {
     case "getBooks":
         $bookController->getBooks();
         break;
+    case "registerUser":
+        $userController->registerUser();
+        break;
+    case "loginUser":
+        $userController->loginUser();
+        break;
+    case "getUsers":
+        $userController->getAllUsers();
+        break;
     default:
-        echo json_encode(["message" => "Invalid API request"]);
+        header("Content-Type: application/json");
+        echo json_encode(["success" => false, "message" => "Invalid API request. Available actions: addBook, getBooks, registerUser, loginUser, getUsers"]);
 }

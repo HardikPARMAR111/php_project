@@ -1,0 +1,24 @@
+[22-Nov-2025 11:40:29 UTC] PHP Warning:  require_once(C:\laragon\www\library-management-system\backend\models/../config/database.php): Failed to open stream: No such file or directory in C:\laragon\www\library-management-system\backend\models\book.php on line 2
+[22-Nov-2025 11:40:29 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\laragon\www\library-management-system\backend\models/../config/database.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\library-management-system\backend\models\book.php:2
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\controllers\BookController.php(2): require_once()
+#1 C:\laragon\www\library-management-system\backend\routes\route.php(3): require_once('C:\\laragon\\www\\...')
+#2 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#3 {main}
+  thrown in C:\laragon\www\library-management-system\backend\models\book.php on line 2
+[22-Nov-2025 11:46:47 UTC] PHP Warning:  require_once(C:\laragon\www\library-management-system\backend\models/../config/database.php): Failed to open stream: No such file or directory in C:\laragon\www\library-management-system\backend\models\book.php on line 2
+[22-Nov-2025 11:46:47 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\laragon\www\library-management-system\backend\models/../config/database.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\library-management-system\backend\models\book.php:2
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\controllers\BookController.php(2): require_once()
+#1 C:\laragon\www\library-management-system\backend\routes\route.php(3): require_once('C:\\laragon\\www\\...')
+#2 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#3 {main}
+  thrown in C:\laragon\www\library-management-system\backend\models\book.php on line 2
+[22-Nov-2025 11:47:56 UTC] PHP Warning:  require_once(C:\laragon\www\library-management-system\backend\models/../config/database.php): Failed to open stream: No such file or directory in C:\laragon\www\library-management-system\backend\models\book.php on line 2
+[22-Nov-2025 11:47:56 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\laragon\www\library-management-system\backend\models/../config/database.php' (include_path='.;C:/laragon/etc/php/pear') in C:\laragon\www\library-management-system\backend\models\book.php:2
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\controllers\BookController.php(2): require_once()
+#1 C:\laragon\www\library-management-system\backend\routes\route.php(3): require_once('C:\\laragon\\www\\...')
+#2 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#3 {main}
+  thrown in C:\laragon\www\library-management-system\backend\models\book.php on line 2

@@ -12,7 +12,7 @@ if (addBookForm) {
     const year = document.getElementById("year").value;
 
     const apiUrl =
-      "http://localhost/library-management-system/backend/index.php?action=addBook";
+      "http://localhost/php_project/backend/index.php?action=addBook";
 
     try {
       const response = await fetch(apiUrl, {
@@ -41,7 +41,9 @@ if (addBookForm) {
 
 async function fetchBooks() {
   try {
-    const response = await fetch("http://localhost/library-management-system/backend/index.php?action=getBooks");
+    const response = await fetch(
+      "http://localhost/pho_project/backend/index.php?action=getBooks"
+    );
     const books = await response.json();
 
     console.log("Books data:", books);
@@ -49,7 +51,7 @@ async function fetchBooks() {
     const tableBody = document.getElementById("booksTable");
     tableBody.innerHTML = "";
 
-    books.data.forEach(book => {
+    books.data.forEach((book) => {
       const row = document.createElement("tr");
       row.innerHTML = `
         <td>${book.title}</td>
@@ -62,17 +64,15 @@ async function fetchBooks() {
       `;
       tableBody.appendChild(row);
     });
-
   } catch (err) {
     console.error("Error loading books:", err);
   }
 }
 
-
 async function deleteBook(id) {
   if (!confirm("Are you sure you want to delete this book?")) return;
 
-  const url = `http://localhost/library-management-system/backend/index.php?action=deleteBook&id=${id}`;
+  const url = `http://localhost/php_project/backend/index.php?action=deleteBook&id=${id}`;
   console.log("Deleting:", url);
 
   try {
@@ -94,7 +94,6 @@ async function deleteBook(id) {
     } else {
       alert("Failed: " + result.message);
     }
-
   } catch (err) {
     console.error(err);
   }
@@ -103,6 +102,5 @@ async function deleteBook(id) {
 function editBook(id) {
   window.location.href = `editBook.html?id=${id}`;
 }
-
 
 window.onload = fetchBooks;

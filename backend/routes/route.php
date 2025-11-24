@@ -28,12 +28,12 @@ switch ($action) {
             exit;
         }
         $id = $_GET['id'];
-        $bookController->getBookById($id);   // Correct Call
+        $bookController->getBookById($id);
         break;
 
-        case "updateBook":
-            $bookController->updateBook();
-            break;
+    case "updateBook":
+        $bookController->updateBook();
+        break;
 
     case "registerUser":
         $userController->registerUser();
@@ -47,11 +47,14 @@ switch ($action) {
         $userController->getAllUsers();
         break;
 
+    case "deleteUser":
+        $userController->deleteUser();
+        break;
+
     default:
-        header("Content-Type: application/json");
         echo json_encode([
             "success" => false,
-            "message" => "Invalid API request. Available actions: addBook, getBooks, getBook, deleteBook, updateBook, registerUser, loginUser, getUsers"
+            "message" => "Invalid API request. Available actions: addBook, getBooks, getBook, deleteBook, updateBook, registerUser, loginUser, getUsers, deleteUser"
         ]);
         break;
 }

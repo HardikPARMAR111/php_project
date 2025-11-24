@@ -59,9 +59,9 @@ class User {
 
     public function delete($id) {
         try {
-            return $this->collection->deleteOne(
-                ['_id' => new MongoDB\BSON\ObjectId($id)]
-            );
+            return $this->collection->deleteOne([
+                '_id' => new MongoDB\BSON\ObjectId($id)
+            ]);
         } catch (Exception $e) {
             throw new Exception("Failed to delete user: " . $e->getMessage());
         }

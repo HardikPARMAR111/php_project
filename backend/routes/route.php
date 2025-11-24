@@ -5,26 +5,53 @@ require_once __DIR__ . "/../controllers/UserController.php";
 $bookController = new BookController();
 $userController = new UserController();
 
-// Get action from GET parameter
+// Get action
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
+
     case "addBook":
         $bookController->createBook();
         break;
+
     case "getBooks":
         $bookController->getBooks();
         break;
+
+    case "deleteBook":
+        $bookController->deleteBook();
+        break;
+
+    case "getBook":
+        if (!isset($_GET['id'])) {
+            echo json_encode(["success" => false, "message" => "ID is required"]);
+            exit;
+        }
+        $id = $_GET['id'];
+        $bookController->getBookById($id);   // Correct Call
+        break;
+
+        case "updateBook":
+            $bookController->updateBook();
+            break;
+
     case "registerUser":
         $userController->registerUser();
         break;
+
     case "loginUser":
         $userController->loginUser();
         break;
+
     case "getUsers":
         $userController->getAllUsers();
         break;
+
     default:
         header("Content-Type: application/json");
-        echo json_encode(["success" => false, "message" => "Invalid API request. Available actions: addBook, getBooks, registerUser, loginUser, getUsers"]);
+        echo json_encode([
+            "success" => false,
+            "message" => "Invalid API request. Available actions: addBook, getBooks, getBook, deleteBook, updateBook, registerUser, loginUser, getUsers"
+        ]);
+        break;
 }

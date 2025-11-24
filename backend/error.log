@@ -22,3 +22,155 @@ Stack trace:
 #2 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
 #3 {main}
   thrown in C:\laragon\www\library-management-system\backend\models\book.php on line 2
+[23-Nov-2025 09:34:57 UTC] PHP Fatal error:  Uncaught Error: Class "MongoDB\Driver\Manager" not found in C:\laragon\www\library-management-system\vendor\mongodb\mongodb\src\Client.php:142
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\config\db.php(10): MongoDB\Client->__construct('mongodb://local...')
+#1 C:\laragon\www\library-management-system\backend\models\book.php(19): Database->__construct()
+#2 C:\laragon\www\library-management-system\backend\controllers\BookController.php(31): Book->__construct()
+#3 C:\laragon\www\library-management-system\backend\routes\route.php(13): BookController->createBook()
+#4 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#5 {main}
+  thrown in C:\laragon\www\library-management-system\vendor\mongodb\mongodb\src\Client.php on line 142
+[23-Nov-2025 09:54:31 UTC] PHP Warning:  Undefined variable $controller in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 09:54:31 UTC] PHP Fatal error:  Uncaught Error: Call to a member function deleteBook() on null in C:\laragon\www\library-management-system\backend\routes\route.php:19
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\index.php(38): require_once()
+#1 {main}
+  thrown in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 09:55:07 UTC] PHP Warning:  Undefined variable $controller in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 09:55:07 UTC] PHP Fatal error:  Uncaught Error: Call to a member function deleteBook() on null in C:\laragon\www\library-management-system\backend\routes\route.php:19
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\index.php(38): require_once()
+#1 {main}
+  thrown in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 09:55:58 UTC] PHP Warning:  Undefined variable $controller in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 09:55:58 UTC] PHP Fatal error:  Uncaught Error: Call to a member function deleteBook() on null in C:\laragon\www\library-management-system\backend\routes\route.php:19
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\index.php(38): require_once()
+#1 {main}
+  thrown in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 09:56:39 UTC] PHP Warning:  Undefined variable $controller in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 09:56:39 UTC] PHP Fatal error:  Uncaught Error: Call to a member function deleteBook() on null in C:\laragon\www\library-management-system\backend\routes\route.php:19
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\index.php(38): require_once()
+#1 {main}
+  thrown in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 09:57:53 UTC] PHP Warning:  Undefined variable $controller in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 09:57:53 UTC] PHP Fatal error:  Uncaught Error: Call to a member function deleteBook() on null in C:\laragon\www\library-management-system\backend\routes\route.php:19
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\index.php(38): require_once()
+#1 {main}
+  thrown in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 10:03:04 UTC] PHP Warning:  Undefined variable $controller in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 10:03:04 UTC] PHP Fatal error:  Uncaught Error: Call to a member function deleteBook() on null in C:\laragon\www\library-management-system\backend\routes\route.php:19
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\index.php(38): require_once()
+#1 {main}
+  thrown in C:\laragon\www\library-management-system\backend\routes\route.php on line 19
+[23-Nov-2025 10:05:06 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 83
+[23-Nov-2025 10:05:06 UTC] PHP Fatal error:  Uncaught Error: Call to a member function delete() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:83
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(19): BookController->deleteBook()
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 83
+[23-Nov-2025 10:05:43 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 83
+[23-Nov-2025 10:05:43 UTC] PHP Fatal error:  Uncaught Error: Call to a member function delete() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:83
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(19): BookController->deleteBook()
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 83
+[23-Nov-2025 10:22:56 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method BookController::getBookById() in C:\laragon\www\library-management-system\backend\routes\route.php:31
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\index.php(38): require_once()
+#1 {main}
+  thrown in C:\laragon\www\library-management-system\backend\routes\route.php on line 31
+[23-Nov-2025 10:23:26 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method BookController::getBookById() in C:\laragon\www\library-management-system\backend\routes\route.php:31
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\index.php(38): require_once()
+#1 {main}
+  thrown in C:\laragon\www\library-management-system\backend\routes\route.php on line 31
+[23-Nov-2025 10:24:14 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:14 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getBookById() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:102
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(31): BookController->getBookById('6922de5e80eb573...')
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:15 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:15 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getBookById() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:102
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(31): BookController->getBookById('6922de5e80eb573...')
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:15 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:15 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getBookById() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:102
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(31): BookController->getBookById('6922de5e80eb573...')
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:16 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:16 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getBookById() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:102
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(31): BookController->getBookById('6922de5e80eb573...')
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:29 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:29 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getBookById() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:102
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(31): BookController->getBookById('6922de5e80eb573...')
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:30 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:24:30 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getBookById() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:102
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(31): BookController->getBookById('6922de5e80eb573...')
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:26:08 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:26:08 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getBookById() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:102
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(31): BookController->getBookById('6922de5e80eb573...')
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:26:09 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:26:09 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getBookById() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:102
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(31): BookController->getBookById('6922de5e80eb573...')
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 102
+[23-Nov-2025 10:26:37 UTC] PHP Warning:  Undefined property: Book::$book in C:\laragon\www\library-management-system\backend\models\book.php on line 66
+[23-Nov-2025 10:26:37 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getBookById() on null in C:\laragon\www\library-management-system\backend\models\book.php:66
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\controllers\BookController.php(105): Book->getBookById('6922de5e80eb573...')
+#1 C:\laragon\www\library-management-system\backend\routes\route.php(31): BookController->getBookById('6922de5e80eb573...')
+#2 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#3 {main}
+  thrown in C:\laragon\www\library-management-system\backend\models\book.php on line 66
+[23-Nov-2025 10:33:13 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Book::updateBook() in C:\laragon\www\library-management-system\backend\controllers\BookController.php:116
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(35): BookController->updateBook()
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 116
+[23-Nov-2025 10:34:04 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Book::updateBook() in C:\laragon\www\library-management-system\backend\controllers\BookController.php:116
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(35): BookController->updateBook()
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 116
+[23-Nov-2025 10:36:28 UTC] PHP Warning:  Undefined property: BookController::$bookModel in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 117
+[23-Nov-2025 10:36:28 UTC] PHP Fatal error:  Uncaught Error: Call to a member function updateBook() on null in C:\laragon\www\library-management-system\backend\controllers\BookController.php:117
+Stack trace:
+#0 C:\laragon\www\library-management-system\backend\routes\route.php(35): BookController->updateBook()
+#1 C:\laragon\www\library-management-system\backend\index.php(38): require_once('C:\\laragon\\www\\...')
+#2 {main}
+  thrown in C:\laragon\www\library-management-system\backend\controllers\BookController.php on line 117

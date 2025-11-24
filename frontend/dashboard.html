@@ -1,0 +1,8 @@
+<h1>Welcome Admin</h1>
+<script>
+  const admin = JSON.parse(localStorage.getItem("admin"));
+  if (!admin) {
+    alert("Unauthorized");
+    window.location.href = "./login.html";
+  }
+</script>

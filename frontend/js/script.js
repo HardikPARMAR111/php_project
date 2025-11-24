@@ -1,18 +1,18 @@
-document
-  .getElementById("addBookForm")
-  .addEventListener("submit", async function (e) {
+console.log("Script loaded");
+
+// =================== ADD BOOK HANDLER ===================
+const addBookForm = document.getElementById("addBookForm");
+
+if (addBookForm) {
+  addBookForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const title = document.getElementById("title").value;
     const author = document.getElementById("author").value;
     const year = document.getElementById("year").value;
 
-    // Update this URL to match your setup
     const apiUrl =
       "http://localhost/library-management-system/backend/index.php?action=addBook";
-
-    console.log("Sending request to:", apiUrl);
-    console.log("Data:", { title, author, year });
 
     try {
       const response = await fetch(apiUrl, {
@@ -20,64 +20,89 @@ document
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title: title,
-          author: author,
-          year: year,
-        }),
+        body: JSON.stringify({ title, author, year }),
       });
 
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-
-      // Get the raw response text first
-      const responseText = await response.text();
-      console.log("Raw response:", responseText);
-
-      // Try to parse it as JSON
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("JSON Parse Error:", parseError);
-        console.error("Response was:", responseText);
-        alert("Server returned invalid JSON. Check console for details.");
-        return;
-      }
+      const result = await response.json();
+      console.log("Add book response:", result);
 
       if (result.success) {
         alert("Book added successfully!");
-        document.getElementById("addBookForm").reset();
+        addBookForm.reset();
       } else {
         alert("Failed: " + result.message);
-        console.error("Server error:", result);
       }
     } catch (err) {
-      console.error("Fetch Error:", err);
-      alert("Error connecting to server: " + err.message);
+      console.error("Error adding book:", err);
+      alert("Server connection error");
     }
   });
+}
 
-// Test function - call this from browser console
-async function testAPI() {
-  const apiUrl =
-    "http://localhost/library-management-system/backend/index.php?action=getBooks";
-  console.log("Testing:", apiUrl);
-
+async function fetchBooks() {
   try {
-    const response = await fetch(apiUrl);
-    const text = await response.text();
-    console.log("Raw response:", text);
+    const response = await fetch("http://localhost/library-management-system/backend/index.php?action=getBooks");
+    const books = await response.json();
 
-    try {
-      const json = JSON.parse(text);
-      console.log("Parsed JSON:", json);
-    } catch (e) {
-      console.error("Not valid JSON:", e);
-    }
+    console.log("Books data:", books);
+
+    const tableBody = document.getElementById("booksTable");
+    tableBody.innerHTML = "";
+
+    books.data.forEach(book => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${book.title}</td>
+        <td>${book.author}</td>
+        <td>${book.year}</td>
+        <td>
+          <button class="btn btn-warning btn-sm" onclick="editBook('${book.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteBook('${book.id}')">Delete</button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+
   } catch (err) {
-    console.error("Error:", err);
+    console.error("Error loading books:", err);
   }
 }
 
-console.log("Script loaded. Run testAPI() in console to debug.");
+
+async function deleteBook(id) {
+  if (!confirm("Are you sure you want to delete this book?")) return;
+
+  const url = `http://localhost/library-management-system/backend/index.php?action=deleteBook&id=${id}`;
+  console.log("Deleting:", url);
+
+  try {
+    const response = await fetch(url);
+    const text = await response.text();
+    console.log("Delete response:", text);
+
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch (e) {
+      console.error("Not valid JSON:", text);
+      return;
+    }
+
+    if (result.success) {
+      alert("Book deleted");
+      fetchBooks();
+    } else {
+      alert("Failed: " + result.message);
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function editBook(id) {
+  window.location.href = `editBook.html?id=${id}`;
+}
+
+
+window.onload = fetchBooks;

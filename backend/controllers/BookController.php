@@ -2,6 +2,11 @@
 require_once __DIR__ . "/../models/book.php";
 
 class BookController {
+    private $book;
+
+    public function __construct() {
+        $this->book = new Book();
+    }
 
     public function createBook() {
         // Set headers first
@@ -71,4 +76,60 @@ class BookController {
             echo json_encode(["success" => false, "message" => "Error: " . $e->getMessage()]);
         }
     }
+
+    public function deleteBook() {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type");
+        header("Content-Type: application/json");
+    
+        $id = $_GET["id"] ?? null;
+    
+        if (!$id) {
+            echo json_encode(["success" => false, "message" => "ID not provided"]);
+            return;
+        }
+    
+        $result = $this->book->delete($id);
+    
+        echo json_encode([
+            "success" => $result,
+            "message" => $result ? "Book deleted successfully" : "Delete failed"
+        ]);
+    }
+    public function getBookById($id)
+{
+    header("Access-Control-Allow-Origin: *");
+    header("Content-Type: application/json");
+
+    $result = $this->book->getBookById($id);
+    echo json_encode($result);
+}
+public function updateBook() {
+    header("Access-Control-Allow-Origin: *");
+    header("Content-Type: application/json");
+
+    $input = file_get_contents("php://input");
+    $data = json_decode($input, true);
+
+    if (!isset($data['id']) || empty($data['id'])) {
+        echo json_encode(["success" => false, "message" => "Invalid book ID"]);
+        return;
+    }
+
+    $id = $data['id'];
+    
+    // Remove id from data before update
+    unset($data['id']);
+
+    $result = $this->book->update($id, $data);
+
+    if ($result->getModifiedCount() > 0) {
+        echo json_encode(["success" => true, "message" => "Book updated successfully"]);
+    } else {
+        echo json_encode(["success" => false, "message" => "No changes detected or update failed"]);
+    }
+}
+
+
 }

@@ -52,11 +52,31 @@ class Book {
 
     public function delete($id) {
         try {
-            return $this->collection->deleteOne(
-                ['_id' => new MongoDB\BSON\ObjectId($id)]
-            );
+            $result = $this->collection->deleteOne([
+                '_id' => new MongoDB\BSON\ObjectId($id)
+            ]);
+            
+            return $result->getDeletedCount() > 0;
         } catch (Exception $e) {
             throw new Exception("Failed to delete book: " . $e->getMessage());
         }
     }
+    public function getBookById($id)
+{
+    try {
+        $book = $this->collection->findOne([
+            '_id' => new MongoDB\BSON\ObjectId($id)
+        ]);
+
+        if ($book) {
+            return ["success" => true, "data" => $book];
+        } else {
+            return ["success" => false, "message" => "Book not found"];
+        }
+
+    } catch (Exception $e) {
+        return ["success" => false, "message" => "Error: " . $e->getMessage()];
+    }
+}
+
 }

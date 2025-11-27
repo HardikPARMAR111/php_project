@@ -42,7 +42,7 @@ if (addBookForm) {
 async function fetchBooks() {
   try {
     const response = await fetch(
-      "http://localhost/pho_project/backend/index.php?action=getBooks"
+      "http://localhost/php_project/backend/index.php?action=getBooks"
     );
     const books = await response.json();
 

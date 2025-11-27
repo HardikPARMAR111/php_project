@@ -33,7 +33,7 @@ class BookController {
         }
 
         try {
-            $book = new Book();
+            
             $insertData = [
                 "title" => $title,
                 "author" => $author,

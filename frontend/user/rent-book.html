@@ -1,60 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Rent Book</title>
-    <link href="../css/style.css" rel="stylesheet" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="container mt-5">
-      <h2>Rent Book</h2>
-      <div class="card p-3">
-        <p><strong>Book:</strong> <span id="bookTitle">Loading...</span></p>
-        <p><strong>Author:</strong> <span id="bookAuthor">Loading...</span></p>
-        <p><strong>Rented On:</strong> <span id="rentedOn"></span></p>
-        <p><strong>Due On:</strong> <span id="dueOn"></span></p>
-        <button class="btn btn-success" id="confirmRent">Confirm Rental</button>
-      </div>
+<head>
+  <meta charset="utf-8"/>
+  <title>Rent Book</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    .status-available { color: green; font-weight: bold; }
+    .status-rented { color: red; font-weight: bold; }
+    .book-card {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .debug-box {
+      background: #333;
+      color: #0f0;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 12px;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item"><a href="user-dashboard.html">Dashboard</a></li>
+        <li class="breadcrumb-item active">Rent Book</li>
+      </ol>
+    </nav>
+
+    <h2 class="mb-4">📚 Rent Book</h2>
+    
+    <!-- Debug Info (remove in production) -->
+    <div id="debugInfo" class="debug-box">
+      Debug Info Loading...
     </div>
 
-    <script>
-      // Simulate book data (replace with PHP + MongoDB later)
-      const urlParams = new URLSearchParams(window.location.search);
-      const bookId = urlParams.get("book_id");
+    <!-- Book Info Section -->
+    <div id="bookInfo" class="book-card">
+      <p class="text-muted">Loading book information...</p>
+    </div>
 
-      const books = {
-        1: { title: "The Great Gatsby", author: "F. Scott Fitzgerald" },
-        2: { title: "1984", author: "George Orwell" },
-      };
+    <!-- Rent Form Section -->
+    <div id="rentForm" class="card p-4 shadow-sm" style="display: none;">
+      <h5 class="mb-3">Rental Details</h5>
+      
+      <div class="mb-3">
+        <label for="days" class="form-label">Rent Duration (days)</label>
+        <select id="days" class="form-select">
+          <option value="7">7 days</option>
+          <option value="14">14 days</option>
+          <option value="30" selected>30 days (1 month)</option>
+          <option value="60">60 days (2 months)</option>
+          <option value="90">90 days (3 months)</option>
+        </select>
+      </div>
 
-      const book = books[bookId] || { title: "Unknown", author: "Unknown" };
+      <div class="mb-3">
+        <label class="form-label">Due Date</label>
+        <input type="text" id="dueDate" class="form-control" readonly>
+      </div>
 
-      document.getElementById("bookTitle").textContent = book.title;
-      document.getElementById("bookAuthor").textContent = book.author;
+      <button id="rentBtn" class="btn btn-primary btn-lg w-100">
+        <span id="btnText">Confirm Rental</span>
+        <span id="btnSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></span>
+      </button>
+      
+      <div id="msg" class="alert mt-3" style="display: none;"></div>
+    </div>
 
-      const today = new Date();
-      const dueDate = new Date();
-      dueDate.setDate(today.getDate() + 30);
+    <!-- Already Rented Message -->
+    <div id="alreadyRented" class="alert alert-warning" style="display: none;">
+      <h5>⚠️ Book Not Available</h5>
+      <p>This book is currently rented by another user.</p>
+      <a href="user-dashboard.html" class="btn btn-outline-primary">Browse Other Books</a>
+    </div>
 
-      document.getElementById("rentedOn").textContent =
-        today.toLocaleDateString();
-      document.getElementById("dueOn").textContent =
-        dueDate.toLocaleDateString();
+    <!-- Not Logged In Message -->
+    <div id="loginRequired" class="alert alert-info" style="display: none;">
+      <h5>🔐 Login Required</h5>
+      <p>You need to be logged in to rent books.</p>
+      <a href="login.html" class="btn btn-primary">Login</a>
+      <a href="register.html" class="btn btn-outline-secondary ms-2">Register</a>
+    </div>
+  </div>
 
-      document.getElementById("confirmRent").addEventListener("click", () => {
-        alert(
-          `You have successfully rented "${
-            book.title
-          }" until ${dueDate.toLocaleDateString()}`
-        );
-        // Later: Send rental info to PHP/MongoDB
-      });
-    </script>
+<script>
+const API = "http://localhost/php_project/backend/index.php";
+const params = new URLSearchParams(window.location.search);
+const bookId = params.get('book_id');
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+// Debug element
+const debugEl = document.getElementById('debugInfo');
+
+// Function to log debug info
+function debug(message) {
+  console.log(message);
+  debugEl.innerHTML += "\n" + (typeof message === 'object' ? JSON.stringify(message, null, 2) : message);
+}
+
+// DOM Elements
+const bookInfoEl = document.getElementById('bookInfo');
+const rentFormEl = document.getElementById('rentForm');
+const alreadyRentedEl = document.getElementById('alreadyRented');
+const loginRequiredEl = document.getElementById('loginRequired');
+const msgEl = document.getElementById('msg');
+const dueDateEl = document.getElementById('dueDate');
+const daysSelect = document.getElementById('days');
+const rentBtn = document.getElementById('rentBtn');
+const btnText = document.getElementById('btnText');
+const btnSpinner = document.getElementById('btnSpinner');
+
+// Initialize debug
+debugEl.innerHTML = `URL: ${window.location.href}
+Book ID from URL: ${bookId}
+API Base: ${API}`;
+
+// Get user from localStorage
+function getUser() {
+  const userStr = localStorage.getItem('user');
+  if (userStr) {
+    try {
+      return JSON.parse(userStr);
+    } catch (e) {
+      console.error("Error parsing user data:", e);
+    }
+  }
+  
+  const userId = localStorage.getItem('userId');
+  const userName = localStorage.getItem('name');
+  const userEmail = localStorage.getItem('email');
+  
+  if (userId) {
+    return { id: userId, name: userName, email: userEmail };
+  }
+  
+  return null;
+}
+
+// Calculate due date
+function updateDueDate() {
+  const days = parseInt(daysSelect.value, 10);
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + days);
+  dueDateEl.value = dueDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+// Show message
+function showMessage(text, type = 'danger') {
+  msgEl.className = `alert alert-${type} mt-3`;
+  msgEl.innerText = text;
+  msgEl.style.display = 'block';
+}
+
+// Hide message
+function hideMessage() {
+  msgEl.style.display = 'none';
+}
+
+// Load book information
+async function loadBook() {
+  debug("\n--- Loading Book ---");
+  
+  if (!bookId) {
+    debug("ERROR: No book ID in URL!");
+    bookInfoEl.innerHTML = `
+      <div class="alert alert-danger">
+        <h5>❌ Error</h5>
+        <p>No book ID provided. Please select a book from the library.</p>
+        <a href="user-dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+      </div>
+    `;
+    return;
+  }
+
+  const apiUrl = `${API}?action=getBook&id=${bookId}`;
+  debug(`Fetching: ${apiUrl}`);
+
+  try {
+    const res = await fetch(apiUrl);
+    debug(`Response Status: ${res.status} ${res.statusText}`);
+    
+    // Get raw text first to see what's returned
+    const rawText = await res.text();
+    debug(`Raw Response: ${rawText.substring(0, 500)}`);
+    
+    // Try to parse as JSON
+    let json;
+    try {
+      json = JSON.parse(rawText);
+    } catch (parseError) {
+      debug(`JSON Parse Error: ${parseError.message}`);
+      bookInfoEl.innerHTML = `
+        <div class="alert alert-danger">
+          <h5>❌ Invalid Response</h5>
+          <p>Server returned invalid JSON. Check the debug info above.</p>
+          <p class="small text-muted">Response: ${rawText.substring(0, 200)}</p>
+        </div>
+      `;
+      return;
+    }
+
+    debug(`Parsed JSON:`);
+    debug(json);
+
+    if (!json.success) {
+      debug(`API Error: ${json.message}`);
+      bookInfoEl.innerHTML = `
+        <div class="alert alert-danger">
+          <h5>❌ Error</h5>
+          <p>${json.message || 'Failed to load book information'}</p>
+          <a href="user-dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+        </div>
+      `;
+      return;
+    }
+
+    const book = json.data;
+    debug(`Book Data:`);
+    debug(book);
+    
+    // Handle MongoDB BSON objects
+    let title = book.title;
+    let author = book.author;
+    let year = book.year;
+    let status = book.status || 'available';
+    
+    // If data is nested (MongoDB BSONDocument)
+    if (typeof title === 'object' && title !== null) {
+      debug("Detected BSON object format");
+      // Try to extract string value
+      title = title['$value'] || title.toString() || 'Unknown';
+    }
+    
+    const isAvailable = status === 'available';
+
+    debug(`Processed - Title: ${title}, Author: ${author}, Status: ${status}`);
+
+    // Display book information
+    bookInfoEl.innerHTML = `
+      <div class="row">
+        <div class="col-md-8">
+          <h4>${title || 'Unknown Title'}</h4>
+          <p class="text-muted mb-2">by <strong>${author || 'Unknown Author'}</strong></p>
+          <p><strong>Year:</strong> ${year || 'N/A'}</p>
+          <p>
+            <strong>Status:</strong> 
+            <span class="status-${status}">${status.toUpperCase()}</span>
+          </p>
+        </div>
+        <div class="col-md-4 text-end">
+          <div class="display-1">📖</div>
+        </div>
+      </div>
+    `;
+
+    // Check user login status
+    const user = getUser();
+    debug(`User: ${JSON.stringify(user)}`);
+
+    if (!user || !user.id) {
+      debug("User not logged in - showing login required");
+      loginRequiredEl.style.display = 'block';
+      return;
+    }
+
+    // Check if book is available
+    if (!isAvailable) {
+      debug("Book not available - showing already rented");
+      alreadyRentedEl.style.display = 'block';
+      return;
+    }
+
+    // Show rent form
+    debug("Showing rent form");
+    rentFormEl.style.display = 'block';
+    updateDueDate();
+
+  } catch (error) {
+    debug(`Fetch Error: ${error.message}`);
+    console.error("Error loading book:", error);
+    bookInfoEl.innerHTML = `
+      <div class="alert alert-danger">
+        <h5>❌ Connection Error</h5>
+        <p>Failed to connect to the server.</p>
+        <p class="text-muted small">Error: ${error.message}</p>
+        <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+      </div>
+    `;
+  }
+}
+
+// Handle rent button click
+async function handleRent() {
+  debug("\n--- Renting Book ---");
+  
+  const user = getUser();
+  
+  if (!user || !user.id) {
+    showMessage("You must be logged in to rent books.", "danger");
+    return;
+  }
+
+  const days = parseInt(daysSelect.value, 10);
+  
+  rentBtn.disabled = true;
+  btnText.innerText = "Processing...";
+  btnSpinner.style.display = 'inline-block';
+  hideMessage();
+
+  const payload = {
+    book_id: bookId,
+    user_id: user.id,
+    days: days
+  };
+  
+  debug(`Rent Payload: ${JSON.stringify(payload)}`);
+
+  try {
+    const res = await fetch(`${API}?action=rentBook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const rawText = await res.text();
+    debug(`Rent Response: ${rawText}`);
+    
+    let json;
+    try {
+      json = JSON.parse(rawText);
+    } catch (e) {
+      showMessage("Invalid response from server", "danger");
+      rentBtn.disabled = false;
+      btnText.innerText = "Confirm Rental";
+      btnSpinner.style.display = 'none';
+      return;
+    }
+
+    if (json.success) {
+      showMessage("✅ Book rented successfully! Redirecting...", "success");
+      setTimeout(() => {
+        window.location.href = 'my-rentals.html';
+      }, 1500);
+    } else {
+      showMessage(json.message || "Failed to rent book", "danger");
+      rentBtn.disabled = false;
+      btnText.innerText = "Confirm Rental";
+      btnSpinner.style.display = 'none';
+    }
+
+  } catch (error) {
+    debug(`Rent Error: ${error.message}`);
+    showMessage(`Connection error: ${error.message}`, "danger");
+    rentBtn.disabled = false;
+    btnText.innerText = "Confirm Rental";
+    btnSpinner.style.display = 'none';
+  }
+}
+
+// Event listeners
+daysSelect.addEventListener('change', updateDueDate);
+rentBtn.addEventListener('click', handleRent);
+
+// Initialize
+loadBook();
+</script>
+</body>
 </html>

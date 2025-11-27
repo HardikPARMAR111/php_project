@@ -55,7 +55,7 @@
     <script>
       async function loadUsers() {
         const res = await fetch(
-          "http://localhost/library-management-system/backend/index.php?action=getUsers"
+          "http://localhost/php_project/backend/index.php?action=getUsers"
         );
         const result = await res.json();
         if (!result.success) return alert(result.message);

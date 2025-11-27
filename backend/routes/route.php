@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . "/../controllers/BookController.php";
 require_once __DIR__ . "/../controllers/UserController.php";
+require_once __DIR__ . "/../controllers/RentalController.php";
+
 
 $bookController = new BookController();
 $userController = new UserController();
@@ -50,6 +52,35 @@ switch ($action) {
     case "deleteUser":
         $userController->deleteUser();
         break;
+
+    case "getUser":
+        $userController->getUser();
+        break;
+
+    case "updateUser":
+        $userController->updateUser();
+        break;
+
+    case "rentBook":
+        $rentalController = new RentalController();
+        $rentalController->rentBook();
+        break;
+    
+    case "returnBook":
+        $rentalController = new RentalController();
+        $rentalController->returnBook();
+        break;
+    
+    case "getRentals":
+        $rentalController = new RentalController();
+        $rentalController->getRentals();
+        break;
+    
+    case "getUserRentals":
+        $rentalController = new RentalController();
+        $rentalController->getUserRentals();
+        break;
+        
 
     default:
         echo json_encode([

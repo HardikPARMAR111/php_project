@@ -1,5 +1,7 @@
 <?php
 // Use absolute path to avoid any directory traversal issues
+
+use MongoDB\BSON\ObjectId;
 $configPath = dirname(__DIR__) . "/config/db.php";
 
 if (!file_exists($configPath)) {
@@ -15,12 +17,8 @@ class Book {
     private $collection;
 
     public function __construct() {
-        try {
-            $db = new Database();
-            $this->collection = $db->getDB()->books;
-        } catch (Exception $e) {
-            throw new Exception("Book model initialization failed: " . $e->getMessage());
-        }
+        $db = (new Database())->getDB();
+        $this->collection = $db->books;
     }
 
     public function create($data) {
@@ -61,22 +59,23 @@ class Book {
             throw new Exception("Failed to delete book: " . $e->getMessage());
         }
     }
-    public function getBookById($id)
-{
-    try {
-        $book = $this->collection->findOne([
-            '_id' => new MongoDB\BSON\ObjectId($id)
-        ]);
-
-        if ($book) {
-            return ["success" => true, "data" => $book];
-        } else {
-            return ["success" => false, "message" => "Book not found"];
+    public function getBookById($id) {
+        try {
+            return $this->collection->findOne([
+                '_id' => new MongoDB\BSON\ObjectId($id)
+            ]);
+        } catch (Exception $e) {
+            return null;
         }
-
-    } catch (Exception $e) {
-        return ["success" => false, "message" => "Error: " . $e->getMessage()];
     }
+
+
+public function updateStatus($id, $status, $extra = []) {
+    $set = array_merge(['status' => $status], $extra);
+    return $this->collection->updateOne(
+        ['_id' => new ObjectId($id)],
+        ['$set' => $set]
+    );
 }
 
 }

@@ -13,17 +13,6 @@
       padding: 20px;
       margin-bottom: 20px;
     }
-    .debug-box {
-      background: #333;
-      color: #0f0;
-      padding: 15px;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 12px;
-      margin-bottom: 20px;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
   </style>
 </head>
 <body class="p-4">
@@ -31,17 +20,12 @@
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-        <li class="breadcrumb-item"><a href="user-dashboard.html">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
         <li class="breadcrumb-item active">Rent Book</li>
       </ol>
     </nav>
 
     <h2 class="mb-4">📚 Rent Book</h2>
-    
-    <!-- Debug Info (remove in production) -->
-    <div id="debugInfo" class="debug-box">
-      Debug Info Loading...
-    </div>
 
     <!-- Book Info Section -->
     <div id="bookInfo" class="book-card">
@@ -80,7 +64,7 @@
     <div id="alreadyRented" class="alert alert-warning" style="display: none;">
       <h5>⚠️ Book Not Available</h5>
       <p>This book is currently rented by another user.</p>
-      <a href="user-dashboard.html" class="btn btn-outline-primary">Browse Other Books</a>
+      <a href="index.html" class="btn btn-outline-primary">Browse Other Books</a>
     </div>
 
     <!-- Not Logged In Message -->
@@ -97,15 +81,6 @@ const API = "http://localhost/php_project/backend/index.php";
 const params = new URLSearchParams(window.location.search);
 const bookId = params.get('book_id');
 
-// Debug element
-const debugEl = document.getElementById('debugInfo');
-
-// Function to log debug info
-function debug(message) {
-  console.log(message);
-  debugEl.innerHTML += "\n" + (typeof message === 'object' ? JSON.stringify(message, null, 2) : message);
-}
-
 // DOM Elements
 const bookInfoEl = document.getElementById('bookInfo');
 const rentFormEl = document.getElementById('rentForm');
@@ -117,11 +92,6 @@ const daysSelect = document.getElementById('days');
 const rentBtn = document.getElementById('rentBtn');
 const btnText = document.getElementById('btnText');
 const btnSpinner = document.getElementById('btnSpinner');
-
-// Initialize debug
-debugEl.innerHTML = `URL: ${window.location.href}
-Book ID from URL: ${bookId}
-API Base: ${API}`;
 
 // Get user from localStorage
 function getUser() {
@@ -172,90 +142,51 @@ function hideMessage() {
 
 // Load book information
 async function loadBook() {
-  debug("\n--- Loading Book ---");
-  
   if (!bookId) {
-    debug("ERROR: No book ID in URL!");
     bookInfoEl.innerHTML = `
       <div class="alert alert-danger">
         <h5>❌ Error</h5>
         <p>No book ID provided. Please select a book from the library.</p>
-        <a href="user-dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+        <a href="index.html" class="btn btn-primary">Go to Dashboard</a>
       </div>
     `;
     return;
   }
 
-  const apiUrl = `${API}?action=getBook&id=${bookId}`;
-  debug(`Fetching: ${apiUrl}`);
-
   try {
-    const res = await fetch(apiUrl);
-    debug(`Response Status: ${res.status} ${res.statusText}`);
+    const res = await fetch(`${API}?action=getBook&id=${bookId}`);
     
-    // Get raw text first to see what's returned
-    const rawText = await res.text();
-    debug(`Raw Response: ${rawText.substring(0, 500)}`);
-    
-    // Try to parse as JSON
-    let json;
-    try {
-      json = JSON.parse(rawText);
-    } catch (parseError) {
-      debug(`JSON Parse Error: ${parseError.message}`);
-      bookInfoEl.innerHTML = `
-        <div class="alert alert-danger">
-          <h5>❌ Invalid Response</h5>
-          <p>Server returned invalid JSON. Check the debug info above.</p>
-          <p class="small text-muted">Response: ${rawText.substring(0, 200)}</p>
-        </div>
-      `;
-      return;
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
     }
-
-    debug(`Parsed JSON:`);
-    debug(json);
+    
+    const json = await res.json();
 
     if (!json.success) {
-      debug(`API Error: ${json.message}`);
       bookInfoEl.innerHTML = `
         <div class="alert alert-danger">
           <h5>❌ Error</h5>
           <p>${json.message || 'Failed to load book information'}</p>
-          <a href="user-dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+          <a href="index.html" class="btn btn-primary">Go to Dashboard</a>
         </div>
       `;
       return;
     }
 
     const book = json.data;
-    debug(`Book Data:`);
-    debug(book);
-    
-    // Handle MongoDB BSON objects
-    let title = book.title;
-    let author = book.author;
-    let year = book.year;
-    let status = book.status || 'available';
-    
-    // If data is nested (MongoDB BSONDocument)
-    if (typeof title === 'object' && title !== null) {
-      debug("Detected BSON object format");
-      // Try to extract string value
-      title = title['$value'] || title.toString() || 'Unknown';
-    }
-    
+    const title = book.title || 'Unknown Title';
+    const author = book.author || 'Unknown Author';
+    const year = book.year || 'N/A';
+    const status = book.status || 'available';
     const isAvailable = status === 'available';
-
-    debug(`Processed - Title: ${title}, Author: ${author}, Status: ${status}`);
 
     // Display book information
     bookInfoEl.innerHTML = `
       <div class="row">
         <div class="col-md-8">
-          <h4>${title || 'Unknown Title'}</h4>
-          <p class="text-muted mb-2">by <strong>${author || 'Unknown Author'}</strong></p>
-          <p><strong>Year:</strong> ${year || 'N/A'}</p>
+          <h4>${title}</h4>
+          <p class="text-muted mb-2">by <strong>${author}</strong></p>
+          <p><strong>Year:</strong> ${year}</p>
           <p>
             <strong>Status:</strong> 
             <span class="status-${status}">${status.toUpperCase()}</span>
@@ -269,34 +200,28 @@ async function loadBook() {
 
     // Check user login status
     const user = getUser();
-    debug(`User: ${JSON.stringify(user)}`);
 
     if (!user || !user.id) {
-      debug("User not logged in - showing login required");
       loginRequiredEl.style.display = 'block';
       return;
     }
 
     // Check if book is available
     if (!isAvailable) {
-      debug("Book not available - showing already rented");
       alreadyRentedEl.style.display = 'block';
       return;
     }
 
     // Show rent form
-    debug("Showing rent form");
     rentFormEl.style.display = 'block';
     updateDueDate();
 
   } catch (error) {
-    debug(`Fetch Error: ${error.message}`);
     console.error("Error loading book:", error);
     bookInfoEl.innerHTML = `
       <div class="alert alert-danger">
         <h5>❌ Connection Error</h5>
-        <p>Failed to connect to the server.</p>
-        <p class="text-muted small">Error: ${error.message}</p>
+        <p>Failed to connect to the server. Please try again later.</p>
         <button class="btn btn-primary" onclick="location.reload()">Retry</button>
       </div>
     `;
@@ -305,8 +230,6 @@ async function loadBook() {
 
 // Handle rent button click
 async function handleRent() {
-  debug("\n--- Renting Book ---");
-  
   const user = getUser();
   
   if (!user || !user.id) {
@@ -316,6 +239,7 @@ async function handleRent() {
 
   const days = parseInt(daysSelect.value, 10);
   
+  // Disable button and show spinner
   rentBtn.disabled = true;
   btnText.innerText = "Processing...";
   btnSpinner.style.display = 'inline-block';
@@ -326,8 +250,6 @@ async function handleRent() {
     user_id: user.id,
     days: days
   };
-  
-  debug(`Rent Payload: ${JSON.stringify(payload)}`);
 
   try {
     const res = await fetch(`${API}?action=rentBook`, {
@@ -336,19 +258,7 @@ async function handleRent() {
       body: JSON.stringify(payload)
     });
 
-    const rawText = await res.text();
-    debug(`Rent Response: ${rawText}`);
-    
-    let json;
-    try {
-      json = JSON.parse(rawText);
-    } catch (e) {
-      showMessage("Invalid response from server", "danger");
-      rentBtn.disabled = false;
-      btnText.innerText = "Confirm Rental";
-      btnSpinner.style.display = 'none';
-      return;
-    }
+    const json = await res.json();
 
     if (json.success) {
       showMessage("✅ Book rented successfully! Redirecting...", "success");
@@ -363,8 +273,8 @@ async function handleRent() {
     }
 
   } catch (error) {
-    debug(`Rent Error: ${error.message}`);
-    showMessage(`Connection error: ${error.message}`, "danger");
+    console.error("Error renting book:", error);
+    showMessage("Connection error. Please try again.", "danger");
     rentBtn.disabled = false;
     btnText.innerText = "Confirm Rental";
     btnSpinner.style.display = 'none';

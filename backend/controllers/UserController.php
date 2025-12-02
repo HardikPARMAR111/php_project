@@ -208,33 +208,45 @@ class UserController {
     // -------------------------------
     // GET ALL USERS
     // -------------------------------
-    public function getAllUsers() {
+public function getAllUsers() {
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            echo json_encode(["success" => false, "message" => "Method not allowed"]);
-            return;
-        }
-
-        try {
-            $user = new User();
-            $users = $user->getAll();
-
-            $mapped = array_map(function($u) {
-                return [
-                    "id" => (string)$u['_id'],
-                    "name" => $u["name"],
-                    "email" => $u["email"],
-                    "role" => $u["role"],
-                    "created_at" => isset($u["created_at"]) ? $u["created_at"]->toDateTime()->format(DATE_ATOM) : null
-                ];
-            }, $users);
-
-            echo json_encode(["success" => true, "data" => $mapped]);
-
-        } catch (Exception $e) {
-            echo json_encode(["success" => false, "message" => $e->getMessage()]);
-        }
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        echo json_encode(["success" => false, "message" => "Method not allowed"]);
+        return;
     }
+
+    try {
+        $user = new User();
+        $users = $user->getAll();
+
+        $mapped = array_map(function($u) {
+            // Handle created_at - could be UTCDateTime, string, or null
+            $createdAt = null;
+            if (isset($u["created_at"])) {
+                if ($u["created_at"] instanceof MongoDB\BSON\UTCDateTime) {
+                    // It's a MongoDB date object
+                    $createdAt = $u["created_at"]->toDateTime()->format(DATE_ATOM);
+                } else {
+                    // It's already a string
+                    $createdAt = $u["created_at"];
+                }
+            }
+
+            return [
+                "id" => (string)$u['_id'],
+                "name" => $u["name"],
+                "email" => $u["email"],
+                "role" => $u["role"] ?? "user",
+                "created_at" => $createdAt
+            ];
+        }, $users);
+
+        echo json_encode(["success" => true, "data" => $mapped]);
+
+    } catch (Exception $e) {
+        echo json_encode(["success" => false, "message" => $e->getMessage()]);
+    }
+}
 
     // -------------------------------
     // DELETE USER
